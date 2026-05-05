@@ -1,0 +1,346 @@
+.home-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+// Hero Section
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  .hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    opacity: 0.95;
+    animation: fadeInUp 0.6s ease-out 0.2s backwards;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    animation: fadeInUp 0.6s ease-out 0.4s backwards;
+  }
+}
+
+// Banners Section
+.banners-section {
+  margin-bottom: 60px;
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+
+  .banners-container {
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .banner-scroll {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .banner-card {
+    padding: 40px 30px;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .banner-icon {
+      margin-bottom: 20px;
+
+      .icon-large {
+        font-size: 64px;
+        height: 64px;
+        width: 64px;
+      }
+    }
+
+    .banner-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .banner-description {
+      font-size: 1.05rem;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .banner-button {
+      padding: 12px 32px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  }
+
+  .tutor-banner {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+
+    .banner-title {
+      color: #1565c0;
+    }
+
+    .banner-description {
+      color: #0d47a1;
+    }
+  }
+
+  .maid-banner {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+
+    .banner-title {
+      color: #c2185b;
+    }
+
+    .banner-description {
+      color: #880e4f;
+    }
+  }
+
+  .rent-banner {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+
+    .banner-title {
+      color: #e65100;
+    }
+
+    .banner-description {
+      color: #ac3b00;
+    }
+  }
+
+  .service-banner {
+    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+
+    .banner-title {
+      color: #6a1b9a;
+    }
+
+    .banner-description {
+      color: #4a148c;
+    }
+  }
+}
+
+// About Section
+.about-section {
+  margin-bottom: 60px;
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+  }
+
+  .feature-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      margin-bottom: 16px;
+      color: #667eea;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+// Stats Section
+.stats-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 60px 40px;
+  border-radius: 12px;
+  margin-bottom: 60px;
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    text-align: center;
+  }
+
+  .stat-card {
+    padding: 20px;
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+  }
+}
+
+// CTA Section
+.cta-section {
+  text-align: center;
+  padding: 60px 40px;
+  background: #f8f9fa;
+  border-radius: 12px;
+
+  .cta-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .cta-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+  }
+
+  .cta-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 30px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 36px;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 50px 20px;
+
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+    }
+  }
+
+  .banner-scroll {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-section {
+    padding: 40px 20px;
+  }
+
+  .cta-section {
+    padding: 40px 20px;
+  }
+}

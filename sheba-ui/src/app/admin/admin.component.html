@@ -1,0 +1,277 @@
+<div class="admin-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Admin Panel</mat-card-title>
+      <mat-card-subtitle>Manage listings and phone requests</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="logout-section">
+        <button mat-raised-button color="warn" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          Logout
+        </button>
+      </div>
+
+      <mat-tab-group [(selectedIndex)]="selectedTab">
+        <mat-tab label="Listings">
+          <div class="tab-content">
+            <div class="actions-bar">
+              <button mat-raised-button color="primary" (click)="openCreateDialog()">
+                <mat-icon>add</mat-icon>
+                Add New Listing
+              </button>
+              <button mat-raised-button (click)="loadListings()">
+                <mat-icon>refresh</mat-icon>
+                Refresh
+              </button>
+            </div>
+
+            <div class="spinner-container" *ngIf="isLoading">
+              <mat-spinner></mat-spinner>
+            </div>
+
+            <div class="table-container" *ngIf="!isLoading">
+              <table mat-table [dataSource]="listings">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>ID</th>
+                  <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="title">
+                  <th mat-header-cell *matHeaderCellDef>Title</th>
+                  <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="category">
+                  <th mat-header-cell *matHeaderCellDef>Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-chip [ngClass]="getCategoryClass(element.category)">
+                      {{ element.category }}
+                    </mat-chip>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="price">
+                  <th mat-header-cell *matHeaderCellDef>Price</th>
+                  <td mat-cell *matCellDef="let element">{{ element.price }} BDT/month</td>
+                </ng-container>
+
+                <ng-container matColumnDef="location">
+                  <th mat-header-cell *matHeaderCellDef>Location</th>
+                  <td mat-cell *matCellDef="let element">{{ element.location }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="phone">
+                  <th mat-header-cell *matHeaderCellDef>Phone</th>
+                  <td mat-cell *matCellDef="let element">{{ element.phone }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span [ngClass]="getStatusBadgeClass(element.is_active)" class="status-badge">
+                      {{ getStatusText(element.is_active) }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button (click)="openEditDialog(element)" matTooltip="Edit">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteListing(element.id)" matTooltip="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Phone Requests">
+          <div class="tab-content">
+            <div class="actions-bar">
+              <h3 class="section-title">Phone Requests from Users</h3>
+              <button mat-raised-button (click)="loadPhoneRequests()">
+                <mat-icon>refresh</mat-icon>
+                Refresh
+              </button>
+            </div>
+
+            <div class="spinner-container" *ngIf="phoneRequestsLoading">
+              <mat-spinner></mat-spinner>
+            </div>
+
+            <div class="table-container" *ngIf="!phoneRequestsLoading">
+              <table mat-table [dataSource]="phoneRequests">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>ID</th>
+                  <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="listing">
+                  <th mat-header-cell *matHeaderCellDef>Listing</th>
+                  <td mat-cell *matCellDef="let element">{{ element.listing_title }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="user">
+                  <th mat-header-cell *matHeaderCellDef>User</th>
+                  <td mat-cell *matCellDef="let element">{{ element.user_name }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="userPhone">
+                  <th mat-header-cell *matHeaderCellDef>User Phone</th>
+                  <td mat-cell *matCellDef="let element">{{ element.user_phone }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef>Description</th>
+                  <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Date</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.created_at | date:'short' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button color="warn" (click)="deletePhoneRequest(element.id)" matTooltip="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="phoneRequestsDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: phoneRequestsDisplayedColumns;"></tr>
+              </table>
+
+              <div *ngIf="phoneRequests.length === 0" class="no-requests">
+                <p>No phone requests yet.</p>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Provider Registrations">
+          <div class="tab-content">
+            <div class="actions-bar">
+              <h3 class="section-title">Provider Registration Requests</h3>
+              <button mat-raised-button (click)="loadProviderRegistrations()">
+                <mat-icon>refresh</mat-icon>
+                Refresh
+              </button>
+            </div>
+
+            <div class="spinner-container" *ngIf="providerRegistrationsLoading">
+              <mat-spinner></mat-spinner>
+            </div>
+
+            <div class="table-container" *ngIf="!providerRegistrationsLoading">
+              <table mat-table [dataSource]="providerRegistrations">
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef>ID</th>
+                  <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef>Name</th>
+                  <td mat-cell *matCellDef="let element">{{ element.full_name }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="category">
+                  <th mat-header-cell *matHeaderCellDef>Category</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-chip [ngClass]="getCategoryClass(element.category)">
+                      {{ element.category }}
+                    </mat-chip>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="mobile">
+                  <th mat-header-cell *matHeaderCellDef>Mobile</th>
+                  <td mat-cell *matCellDef="let element">{{ element.mobile_number }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="address">
+                  <th mat-header-cell *matHeaderCellDef>Address</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span class="truncate-text">{{ element.address }}</span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="files">
+                  <th mat-header-cell *matHeaderCellDef>Files</th>
+                  <td mat-cell *matCellDef="let element">
+                    <div class="file-links">
+                      <a *ngIf="element.nid_photo_url" [href]="element.nid_photo_url" target="_blank" class="file-link">
+                        <mat-icon>image</mat-icon>
+                        NID Photo
+                      </a>
+                      <a *ngIf="element.cv_url" [href]="element.cv_url" target="_blank" class="file-link">
+                        <mat-icon>description</mat-icon>
+                        CV
+                      </a>
+                      <span *ngIf="!element.nid_photo_url && !element.cv_url" class="no-files">
+                        No files
+                      </span>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                  <th mat-header-cell *matHeaderCellDef>Status</th>
+                  <td mat-cell *matCellDef="let element">
+                    <span [ngClass]="getRegistrationStatusClass(element.status)" class="status-badge">
+                      {{ element.status }}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Date</th>
+                  <td mat-cell *matCellDef="let element">
+                    {{ element.created_at | date:'short' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Actions</th>
+                  <td mat-cell *matCellDef="let element">
+                    <mat-select placeholder="Action" (selectionChange)="updateRegistrationStatus(element.id, $event.value)" class="status-select">
+                      <mat-option value="pending">Pending</mat-option>
+                      <mat-option value="approved">Approve</mat-option>
+                      <mat-option value="rejected">Reject</mat-option>
+                    </mat-select>
+                    <button mat-icon-button (click)="downloadRegistrationPDF(element)" matTooltip="Download PDF">
+                      <mat-icon>picture_as_pdf</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteRegistration(element.id)" matTooltip="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="providerRegistrationsDisplayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: providerRegistrationsDisplayedColumns;"></tr>
+              </table>
+
+              <div *ngIf="providerRegistrations.length === 0" class="no-requests">
+                <p>No provider registrations yet.</p>
+              </div>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

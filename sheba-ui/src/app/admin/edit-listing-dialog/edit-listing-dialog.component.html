@@ -1,0 +1,69 @@
+<h2 mat-dialog-title>Edit Listing</h2>
+
+<mat-dialog-content [formGroup]="listingForm">
+  <div class="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" placeholder="Enter listing title">
+      <mat-error>{{ getErrorMessage('title') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Price (BDT)</mat-label>
+      <input matInput type="number" formControlName="price" placeholder="Enter price">
+      <mat-error>{{ getErrorMessage('price') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Rate Type</mat-label>
+      <mat-select formControlName="rate_type">
+        <mat-option value="month">Per Month</mat-option>
+        <mat-option value="day">Per Day</mat-option>
+        <mat-option value="service">Per Service</mat-option>
+        <mat-option value="negotiable">Negotiable</mat-option>
+      </mat-select>
+      <mat-error>{{ getErrorMessage('rate_type') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Location</mat-label>
+      <input matInput formControlName="location" placeholder="Enter location">
+      <mat-error>{{ getErrorMessage('location') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input matInput formControlName="phone" placeholder="Enter phone number">
+      <mat-error>{{ getErrorMessage('phone') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Phone Visibility</mat-label>
+      <mat-select formControlName="phone_visibility">
+        <mat-option value="show">Show Phone Number</mat-option>
+        <mat-option value="request">Request Phone Number</mat-option>
+      </mat-select>
+      <mat-hint>Show phone number directly or require users to request it</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="4" placeholder="Enter detailed description"></textarea>
+      <mat-error>{{ getErrorMessage('description') }}</mat-error>
+    </mat-form-field>
+
+    <mat-checkbox formControlName="is_active">
+      Active Listing
+    </mat-checkbox>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">
+    Cancel
+  </button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="listingForm.invalid || isLoading">
+    <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+    <span *ngIf="!isLoading">Update Listing</span>
+  </button>
+</mat-dialog-actions>

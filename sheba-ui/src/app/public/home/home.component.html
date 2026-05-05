@@ -1,0 +1,147 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to Help Now BD</h1>
+      <p class="hero-subtitle">Your one-stop platform for finding tutors, maids, and rental properties in Chittagong!</p>
+      <p class="hero-description">Connect with trusted service providers and find your perfect match with ease</p>
+    </div>
+  </section>
+
+  <!-- Scrolling Banners Section -->
+  <section class="banners-section">
+    <h2 class="section-title">Our Services</h2>
+    <div class="banners-container">
+      <div class="banner-scroll">
+        <!-- Tutor Banner -->
+        <div class="banner-card tutor-banner" (click)="navigateTo('tutor')">
+          <div class="banner-icon">
+            <mat-icon class="icon-large">school</mat-icon>
+          </div>
+          <h3 class="banner-title">Find a Tutor</h3>
+          <p class="banner-description">Expert tutors for all subjects and levels</p>
+          <button mat-raised-button color="primary" class="banner-button">
+            Browse Tutors
+          </button>
+        </div>
+
+        <!-- Maid Banner -->
+        <div class="banner-card maid-banner" (click)="navigateTo('maid')">
+          <div class="banner-icon">
+            <mat-icon class="icon-large">cleaning_services</mat-icon>
+          </div>
+          <h3 class="banner-title">Find a Maid</h3>
+          <p class="banner-description">Professional cleaning and household services</p>
+          <button mat-raised-button color="warn" class="banner-button">
+            Browse Maids
+          </button>
+        </div>
+
+        <!-- Rent Banner -->
+        <div class="banner-card rent-banner" (click)="navigateTo('rent')">
+          <div class="banner-icon">
+            <mat-icon class="icon-large">home</mat-icon>
+          </div>
+          <h3 class="banner-title">Find Rentals</h3>
+          <p class="banner-description">Apartments, houses, and rooms for rent</p>
+          <button mat-raised-button color="accent" class="banner-button">
+            Browse Rentals
+          </button>
+        </div>
+
+        <!-- Service Banner -->
+        <div class="banner-card service-banner" (click)="navigateTo('service')">
+          <div class="banner-icon">
+            <mat-icon class="icon-large">build</mat-icon>
+          </div>
+          <h3 class="banner-title">Find Services</h3>
+          <p class="banner-description">Electricians, plumbers, and AC technicians</p>
+          <button mat-raised-button color="primary" class="banner-button">
+            Browse Services
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section">
+    <div class="about-content">
+      <h2 class="section-title">Why Choose Help Now BD?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <mat-icon class="feature-icon">verified_user</mat-icon>
+          <h3>Verified Providers</h3>
+          <p>All service providers are verified and trusted</p>
+        </div>
+        <div class="feature-card">
+          <mat-icon class="feature-icon">speed</mat-icon>
+          <h3>Quick Response</h3>
+          <p>Get fast responses and connect instantly</p>
+        </div>
+        <div class="feature-card">
+          <mat-icon class="feature-icon">security</mat-icon>
+          <h3>Privacy Protection</h3>
+          <p>Your contact information is secure with us</p>
+        </div>
+        <div class="feature-card">
+          <mat-icon class="feature-icon">support_agent</mat-icon>
+          <h3>24/7 Support</h3>
+          <p>We're here to help you anytime</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3 class="stat-number">500+</h3>
+        <p class="stat-label">Active Tutors</p>
+      </div>
+      <div class="stat-card">
+        <h3 class="stat-number">300+</h3>
+        <p class="stat-label">Maids Available</p>
+      </div>
+      <div class="stat-card">
+        <h3 class="stat-number">1000+</h3>
+        <p class="stat-label">Rental Properties</p>
+      </div>
+      <div class="stat-card">
+        <h3 class="stat-number">200+</h3>
+        <p class="stat-label">Service Providers</p>
+      </div>
+      <div class="stat-card">
+        <h3 class="stat-number">10K+</h3>
+        <p class="stat-label">Happy Users</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to Get Started?</h2>
+      <p class="cta-subtitle">Join thousands of satisfied users today</p>
+      <div class="cta-buttons">
+        <button mat-raised-button color="primary" (click)="navigateTo('tutor')">
+          <mat-icon>school</mat-icon>
+          Find a Tutor
+        </button>
+        <button mat-raised-button color="warn" (click)="navigateTo('maid')">
+          <mat-icon>cleaning_services</mat-icon>
+          Find a Maid
+        </button>
+        <button mat-raised-button color="accent" (click)="navigateTo('rent')">
+          <mat-icon>home</mat-icon>
+          Find Rentals
+        </button>
+        <button mat-raised-button color="primary" (click)="navigateTo('service')">
+          <mat-icon>build</mat-icon>
+          Find Services
+        </button>
+      </div>
+    </div>
+  </section>
+</div>

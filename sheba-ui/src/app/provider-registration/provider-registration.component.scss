@@ -1,0 +1,284 @@
+.registration-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.registration-card {
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+
+  .back-button {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    color: #667eea;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    margin-bottom: 8px;
+
+    &:hover {
+      color: #764ba2;
+    }
+
+    mat-icon {
+      font-size: 20px;
+    }
+  }
+
+  .card-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin: 0;
+  }
+
+  .card-subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+  }
+}
+
+.card-content {
+  padding: 24px;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.category-section {
+  margin-bottom: 16px;
+  text-align: center;
+
+  h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 24px;
+  }
+
+  .category-select-field {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+
+    ::ng-deep .mat-mdc-select-value {
+      text-align: left;
+    }
+  }
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #667eea;
+}
+
+.category-selection {
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: white;
+
+    &:hover {
+      border-color: #667eea;
+      background-color: #f5f5f5;
+      transform: translateY(-2px);
+    }
+
+    &.selected {
+      border-color: #667eea;
+      background-color: #e8eaf6;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .category-icon {
+      font-size: 48px;
+      color: #667eea;
+      margin-bottom: 12px;
+    }
+
+    .category-name {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #333;
+      text-align: center;
+    }
+  }
+
+  .error-message {
+    color: #f44336;
+    font-size: 0.875rem;
+    margin-top: 8px;
+  }
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-field {
+  width: 100%;
+
+  &.full-width {
+    width: 100%;
+  }
+}
+
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+
+  .upload-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #666;
+
+    mat-icon {
+      color: #667eea;
+    }
+  }
+
+  .upload-btn {
+    align-self: flex-start;
+  }
+
+  .preview-container {
+    position: relative;
+    display: inline-block;
+    margin-top: 8px;
+
+    .preview-image {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .file-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 8px;
+
+    mat-icon {
+      color: #667eea;
+    }
+
+    .file-name {
+      flex: 1;
+      font-size: 0.875rem;
+      color: #333;
+    }
+
+    .remove-file-btn {
+      ::ng-deep .mat-button-wrapper {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.card-actions {
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+
+  .submit-btn {
+    min-width: 150px;
+  }
+}
+
+// Responsive styles
+@media (max-width: 768px) {
+  .registration-card {
+    margin: 0;
+    border-radius: 0;
+    min-height: 100vh;
+  }
+
+  .card-header {
+    .card-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .category-selection {
+    .category-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .category-card {
+      padding: 16px 12px;
+
+      .category-icon {
+        font-size: 36px;
+      }
+
+      .category-name {
+        font-size: 0.875rem;
+      }
+    }
+  }
+}

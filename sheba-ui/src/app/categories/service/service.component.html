@@ -1,0 +1,136 @@
+<div class="service-container">
+  <!-- Navigation Breadcrumbs -->
+  <div class="breadcrumbs">
+    <a [routerLink]="['/']" class="breadcrumb-link">Home</a>
+    <span class="breadcrumb-separator">/</span>
+    <span class="breadcrumb-current">Service</span>
+  </div>
+
+  <div class="header-section">
+    <h1>Find Home Services</h1>
+    <p>Connect with expert electricians, plumbers, and AC technicians</p>
+    <div class="results-count" *ngIf="!isLoading">
+      Showing {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} listings
+    </div>
+  </div>
+
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search Services</mat-label>
+      <input matInput 
+             [(ngModel)]="searchTerm" 
+             (input)="filterListings()" 
+             placeholder="Search by title, description, location, or price...">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="spinner-container" *ngIf="isLoading">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <div class="listings-grid" *ngIf="!isLoading">
+    <mat-card *ngFor="let listing of filteredListings" class="listing-card">
+      <!-- Main Image -->
+      <div class="card-image" *ngIf="getMainImage(listing)">
+        <img [src]="getImageUrl(getMainImage(listing)!)" [alt]="listing.title">
+      </div>
+      
+      <mat-card-header class="card-header">
+        <mat-card-title class="card-title">{{ listing.title }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="card-content">
+        <div class="description">
+          <p>{{ listing.description }}</p>
+        </div>
+        
+        <div class="info-row">
+          <mat-icon class="info-icon">payments</mat-icon>
+          <span class="info-text">
+            <strong>Rate:</strong> 
+            <ng-container [ngSwitch]="listing.rate_type">
+              <ng-container *ngSwitchCase="'month'">{{ listing.price }} BDT/month</ng-container>
+              <ng-container *ngSwitchCase="'day'">{{ listing.price }} BDT/day</ng-container>
+              <ng-container *ngSwitchCase="'service'">{{ listing.price }} BDT/service</ng-container>
+              <ng-container *ngSwitchCase="'negotiable'">Negotiable</ng-container>
+            </ng-container>
+          </span>
+        </div>
+
+        <div class="info-row">
+          <mat-icon class="info-icon">location_on</mat-icon>
+          <span class="info-text">
+            <strong>Location:</strong> {{ listing.location }}
+          </span>
+        </div>
+
+        <div class="info-row" *ngIf="listing.phone_visibility === 'show'">
+          <mat-icon class="info-icon">phone</mat-icon>
+          <span class="info-text">
+            <strong>Phone:</strong> {{ listing.phone }}
+          </span>
+        </div>
+        <div class="info-row" *ngIf="listing.phone_visibility === 'request'">
+          <mat-icon class="info-icon">phone_in_talk</mat-icon>
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="openPhoneRequestDialog(listing); $event.stopPropagation()"
+            class="request-phone-btn">
+            <mat-icon>phone</mat-icon>
+            Request Phone Number
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="filteredListings.length === 0 && !isLoading" class="no-listings">
+      <mat-card-content>
+        <p>No services found matching your search criteria.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="listings.length === 0 && !isLoading" class="no-listings">
+      <mat-card-content>
+        <p>No service listings available at the moment.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Pagination Controls -->
+  <div class="pagination-container" *ngIf="totalPages > 1 && !isLoading">
+    <button 
+      mat-button 
+      [disabled]="currentPage === 1"
+      (click)="onPageChange(currentPage - 1)"
+      class="pagination-btn">
+      <mat-icon>chevron_left</mat-icon>
+      Previous
+    </button>
+
+    <div class="pagination-numbers">
+      <button 
+        *ngFor="let page of getPageNumbers()"
+        mat-button
+        [class.active]="page === currentPage"
+        (click)="onPageChange(page)"
+        class="pagination-number">
+        {{ page }}
+      </button>
+    </div>
+
+    <button 
+      mat-button 
+      [disabled]="currentPage === totalPages"
+      (click)="onPageChange(currentPage + 1)"
+      class="pagination-btn">
+      Next
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </div>
+
+  <!-- Page Info -->
+  <div class="page-info" *ngIf="totalPages > 1 && !isLoading">
+    Page {{ currentPage }} of {{ totalPages }}
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>Request Phone Number</h2>
+<mat-dialog-content>
+  <div class="listing-info">
+    <p class="info-text">You're requesting phone number for:</p>
+    <p class="listing-title">{{ listingTitle }}</p>
+  </div>
+
+  <form [formGroup]="requestForm" class="request-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Your Name</mat-label>
+      <input matInput formControlName="user_name" placeholder="Enter your full name">
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-error>{{ getErrorMessage('user_name') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Your Phone Number</mat-label>
+      <input matInput formControlName="user_phone" placeholder="Enter your phone number">
+      <mat-icon matPrefix>phone</mat-icon>
+      <mat-error>{{ getErrorMessage('user_phone') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Why are you interested?</mat-label>
+      <textarea 
+        matInput 
+        formControlName="user_description" 
+        placeholder="Describe why you're interested in this listing"
+        rows="4"
+        maxlength="500">
+      </textarea>
+      <mat-icon matPrefix>message</mat-icon>
+      <mat-hint align="end">{{ requestForm.get('user_description')?.value?.length || 0 }}/500</mat-hint>
+      <mat-error>{{ getErrorMessage('user_description') }}</mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button 
+    mat-button 
+    (click)="onCancel()"
+    [disabled]="isLoading">
+    Cancel
+  </button>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="onSubmit()"
+    [disabled]="requestForm.invalid || isLoading">
+    <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+    <span *ngIf="!isLoading">Send Request</span>
+  </button>
+</mat-dialog-actions>

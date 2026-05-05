@@ -1,0 +1,67 @@
+<mat-toolbar color="primary" class="centered-toolbar">
+  <button mat-button [routerLink]="['/']" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">
+    Home
+  </button>
+  <button mat-button [routerLink]="['/tutor']" routerLinkActive="active-link">
+    <mat-icon>school</mat-icon>
+    Tutor
+  </button>
+  <button mat-button [routerLink]="['/maid']" routerLinkActive="active-link">
+    <mat-icon>cleaning_services</mat-icon>
+    Maid
+  </button>
+  <button mat-button [routerLink]="['/rent']" routerLinkActive="active-link">
+    <mat-icon>home</mat-icon>
+    Rent
+  </button>
+  <button mat-button [routerLink]="['/service']" routerLinkActive="active-link">
+    <mat-icon>build</mat-icon>
+    Service
+  </button>
+  <button mat-button [routerLink]="['/register-provider']" routerLinkActive="active-link" class="register-provider-btn">
+    <mat-icon>person_add</mat-icon>
+    Register
+  </button>
+</mat-toolbar>
+
+<router-outlet />
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3 class="footer-title">Help Now BD</h3>
+      <p class="footer-description">Your trusted platform for finding tutors, maids, and rental services in Chittagong, Bangladesh.</p>
+    </div>
+    <div class="footer-section">
+      <h4 class="footer-heading">Contact Us</h4>
+      <div class="contact-info">
+        <div class="contact-item">
+          <mat-icon>phone</mat-icon>
+          <span>01626-719163;</span>
+          <span>01306-292940</span>
+        </div>
+        <div class="contact-item">
+          <mat-icon>email</mat-icon>
+          <span>info&#64;helpnowbd.com</span>
+        </div>
+        <div class="contact-item">
+          <mat-icon>location_on</mat-icon>
+          <span>Chittagong, Bangladesh</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-section">
+      <h4 class="footer-heading">Quick Links</h4>
+      <ul class="footer-links">
+        <li><a [routerLink]="['/']">Home</a></li>
+        <li><a [routerLink]="['/tutor']">Find Tutor</a></li>
+        <li><a [routerLink]="['/maid']">Find Maid</a></li>
+        <li><a [routerLink]="['/rent']">Find Rentals</a></li>
+        <li><a [routerLink]="['/service']">Find Services</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Help Now BD. All rights reserved.</p>
+  </div>
+</footer>

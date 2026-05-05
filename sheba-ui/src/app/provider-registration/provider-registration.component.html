@@ -1,0 +1,136 @@
+<div class="registration-container">
+  <mat-card class="registration-card">
+    <mat-card-header class="card-header">
+      <div class="back-button" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        <span>Back</span>
+      </div>
+      <mat-card-title class="card-title">Provider Registration</mat-card-title>
+      <mat-card-subtitle class="card-subtitle">Join as a service provider</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="card-content">
+      <form [formGroup]="registrationForm" class="registration-form">
+        
+          <!-- Category Selection -->
+          <div class="category-section">
+            <h2>What services do you provide?</h2>
+            <mat-form-field appearance="outline" class="category-select-field">
+              <mat-label>Select Category</mat-label>
+              <mat-select formControlName="category" placeholder="Choose your category">
+                <mat-option *ngFor="let cat of categories" [value]="cat.name">
+                  <mat-icon>{{ cat.icon }}</mat-icon>
+                  {{ cat.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="registrationForm.get('category')?.errors?.['required']">
+                Please select a category
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h3 class="section-title">Personal Information</h3>
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Full Name *</mat-label>
+            <input matInput formControlName="full_name" placeholder="Enter your full name">
+            <mat-error>{{ getErrorMessage('full_name') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Mobile Number *</mat-label>
+            <input matInput formControlName="mobile_number" placeholder="Enter your mobile number">
+            <mat-icon matPrefix>phone</mat-icon>
+            <mat-error>{{ getErrorMessage('mobile_number') }}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Address *</mat-label>
+            <textarea matInput formControlName="address" rows="3" placeholder="Enter your full address"></textarea>
+            <mat-icon matPrefix>location_on</mat-icon>
+            <mat-error>{{ getErrorMessage('address') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Documents -->
+        <div class="form-section">
+          <h3 class="section-title">Documents</h3>
+          
+          <div class="upload-section">
+            <label class="upload-label">
+              <mat-icon>add_a_photo</mat-icon>
+              <span>Upload NID Copy (Optional)</span>
+            </label>
+            <input type="file" accept="image/*" (change)="onNIDPhotoSelected($event)" #nidInput hidden>
+            <button mat-button type="button" (click)="nidInput.click()" class="upload-btn">
+              <mat-icon>upload</mat-icon>
+              Choose File
+            </button>
+            
+            <div class="preview-container" *ngIf="nidPhotoPreview">
+              <img [src]="nidPhotoPreview" alt="NID Preview" class="preview-image">
+              <button mat-mini-fab color="warn" (click)="removeNIDPhoto()" class="remove-btn">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <div class="upload-section">
+            <label class="upload-label">
+              <mat-icon>description</mat-icon>
+              <span>Upload CV (Optional)</span>
+            </label>
+            <input type="file" accept=".pdf,.doc,.docx" (change)="onCVSelected($event)" #cvInput hidden>
+            <button mat-button type="button" (click)="cvInput.click()" class="upload-btn">
+              <mat-icon>upload</mat-icon>
+              Choose File
+            </button>
+            
+            <div class="file-display" *ngIf="cvFileName">
+              <mat-icon>description</mat-icon>
+              <span class="file-name">{{ cvFileName }}</span>
+              <button mat-icon-button color="warn" (click)="removeCV()" class="remove-file-btn">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="form-section">
+          <h3 class="section-title">Additional Information</h3>
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Reference Number (Optional)</mat-label>
+            <input matInput formControlName="reference_number" placeholder="Enter reference number">
+            <mat-icon matPrefix>contact_phone</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Other Notes (Optional)</mat-label>
+            <textarea matInput formControlName="other_notes" rows="4" placeholder="Any additional information you'd like to share"></textarea>
+            <mat-icon matPrefix>note</mat-icon>
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end" class="card-actions">
+      <button mat-button (click)="onCancel()" [disabled]="isLoading">
+        Cancel
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="onSubmit()" 
+        [disabled]="registrationForm.invalid || isLoading"
+        class="submit-btn"
+      >
+        <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+        <span *ngIf="!isLoading">Submit Registration</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
