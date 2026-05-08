@@ -1,0 +1,73 @@
+<div class="listing-detail-dialog">
+  <mat-card class="detail-card">
+    <div class="dialog-header">
+      <h2 class="dialog-title">{{ data.listing.title }}</h2>
+      <button mat-icon-button (click)="closeDialog()" class="close-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="dialog-content">
+      <!-- Image Section -->
+      <div class="image-section" *ngIf="data.imageUrl">
+        <img [src]="data.imageUrl" [alt]="data.listing.title">
+      </div>
+
+      <!-- Description Section -->
+      <div class="description-section">
+        <h3>Description</h3>
+        <div class="description-content">
+          <p>{{ data.listing.description }}</p>
+        </div>
+      </div>
+
+      <!-- Details Section -->
+      <div class="details-section">
+        <div class="detail-row">
+          <mat-icon class="detail-icon">payments</mat-icon>
+          <div class="detail-info">
+            <span class="detail-label">Rate:</span>
+            <span class="detail-value">{{ data.getRateDisplay(data.listing.rate_type, data.listing.price) }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <mat-icon class="detail-icon">location_on</mat-icon>
+          <div class="detail-info">
+            <span class="detail-label">Location:</span>
+            <span class="detail-value">{{ data.listing.location }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="data.listing.phone_visibility === 'show'">
+          <mat-icon class="detail-icon">phone</mat-icon>
+          <div class="detail-info">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">{{ data.listing.phone }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="data.listing.created_at">
+          <mat-icon class="detail-icon">calendar_today</mat-icon>
+          <div class="detail-info">
+            <span class="detail-label">Posted:</span>
+            <span class="detail-value">{{ data.listing.created_at | date:'medium' }}</span>
+          </div>
+        </div>
+
+        <div class="detail-row" *ngIf="data.listing.category">
+          <mat-icon class="detail-icon">category</mat-icon>
+          <div class="detail-info">
+            <span class="detail-label">Category:</span>
+            <span class="detail-value">{{ data.listing.category }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="dialog-footer">
+      <button mat-raised-button color="primary" (click)="closeDialog()">Close</button>
+    </div>
+  </mat-card>
+</div>

@@ -30,7 +30,7 @@
   </div>
 
   <div class="listings-grid" *ngIf="!isLoading">
-    <mat-card *ngFor="let listing of filteredListings" class="listing-card">
+    <mat-card *ngFor="let listing of filteredListings" class="listing-card" (click)="openListingDetail(listing)">
       <!-- Main Image -->
       <div class="card-image" *ngIf="getMainImage(listing)">
         <img [src]="getImageUrl(getMainImage(listing)!)" [alt]="listing.title">
@@ -44,7 +44,7 @@
           <p>{{ listing.description }}</p>
         </div>
         
-        <div class="info-row">
+        <div class="info-row compact">
           <mat-icon class="info-icon">payments</mat-icon>
           <span class="info-text">
             <strong>Rate:</strong> 
@@ -57,20 +57,20 @@
           </span>
         </div>
 
-        <div class="info-row">
+        <div class="info-row compact">
           <mat-icon class="info-icon">location_on</mat-icon>
           <span class="info-text">
             <strong>Location:</strong> {{ listing.location }}
           </span>
         </div>
 
-        <div class="info-row" *ngIf="listing.phone_visibility === 'show'">
+        <div class="info-row compact" *ngIf="listing.phone_visibility === 'show'">
           <mat-icon class="info-icon">phone</mat-icon>
           <span class="info-text">
             <strong>Phone:</strong> {{ listing.phone }}
           </span>
         </div>
-        <div class="info-row" *ngIf="listing.phone_visibility === 'request'">
+        <div class="info-row compact" *ngIf="listing.phone_visibility === 'request'">
           <mat-icon class="info-icon">phone_in_talk</mat-icon>
           <button 
             mat-raised-button 
@@ -78,7 +78,7 @@
             (click)="openPhoneRequestDialog(listing); $event.stopPropagation()"
             class="request-phone-btn">
             <mat-icon>phone</mat-icon>
-            Request Phone Number
+            Contact
           </button>
         </div>
       </mat-card-content>

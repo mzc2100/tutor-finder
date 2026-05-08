@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { PhoneRequestDialogComponent } from '../../shared/phone-request-dialog/phone-request-dialog.component';
+import { ListingDetailDialogComponent, ListingDetailData } from '../../shared/listing-detail-dialog/listing-detail-dialog.component';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
@@ -109,6 +110,37 @@ export class MaidComponent implements OnInit {
         console.log('Phone request sent');
       }
     });
+  }
+
+  openListingDetail(listing: Listing): void {
+    const mainImage = this.getMainImage(listing);
+    const imageUrl = mainImage ? this.getImageUrl(mainImage) : '';
+    
+    const dialogRef = this.dialog.open(ListingDetailDialogComponent, {
+      maxWidth: '900px',
+      width: '95%',
+      maxHeight: '90vh',
+      data: {
+        listing: listing,
+        imageUrl: imageUrl,
+        getRateDisplay: this.getRateDisplay.bind(this)
+      }
+    });
+  }
+
+  getRateDisplay(rateType: string, price: number): string {
+    switch(rateType) {
+      case 'month':
+        return `${price} BDT/month`;
+      case 'day':
+        return `${price} BDT/day`;
+      case 'service':
+        return `${price} BDT/service`;
+      case 'negotiable':
+        return 'Negotiable';
+      default:
+        return `${price} BDT`;
+    }
   }
 
   getImageUrl(imageName: string): string {
