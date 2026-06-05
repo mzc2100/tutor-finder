@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/mysql');
 
-// GET all active listings with images
+// GET all active listings with images and service types
 router.get('/', async (req, res) => {
   const [rows] = await db.query(
     `SELECT l.*, c.name AS category,
@@ -14,13 +14,26 @@ router.get('/', async (req, res) => {
      ORDER BY l.created_at DESC`
   );
 
-  // Parse images array for each listing
-  const listingsWithImages = rows.map(row => ({
-    ...row,
-    images: row.images ? row.images.split(',') : []
+  // Parse images array for each listing and get service types
+  const listingsWithDetails = await Promise.all(rows.map(async (row) => {
+    // Get service types for this listing
+    const [serviceTypes] = await db.query(
+      `SELECT st.id, st.name, st.display_name, st.icon
+       FROM service_types st
+       JOIN listing_service_types lst ON st.id = lst.service_type_id
+       WHERE lst.listing_id = ?
+       ORDER BY st.sort_order, st.name`,
+      [row.id]
+    );
+
+    return {
+      ...row,
+      images: row.images ? row.images.split(',') : [],
+      service_types: serviceTypes
+    };
   }));
 
-  res.json(listingsWithImages);
+  res.json(listingsWithDetails);
 });
 
 // SEARCH listings with images with pagination
@@ -75,14 +88,27 @@ router.get('/search', async (req, res) => {
 
   const [rows] = await db.query(sql, params);
 
-  // Parse images array for each listing
-  const listingsWithImages = rows.map(row => ({
-    ...row,
-    images: row.images ? row.images.split(',') : []
+  // Parse images array for each listing and get service types
+  const listingsWithDetails = await Promise.all(rows.map(async (row) => {
+    // Get service types for this listing
+    const [serviceTypes] = await db.query(
+      `SELECT st.id, st.name, st.display_name, st.icon
+       FROM service_types st
+       JOIN listing_service_types lst ON st.id = lst.service_type_id
+       WHERE lst.listing_id = ?
+       ORDER BY st.sort_order, st.name`,
+      [row.id]
+    );
+
+    return {
+      ...row,
+      images: row.images ? row.images.split(',') : [],
+      service_types: serviceTypes
+    };
   }));
 
   res.json({
-    data: listingsWithImages,
+    data: listingsWithDetails,
     pagination: {
       currentPage: pageNum,
       itemsPerPage: limitNum,

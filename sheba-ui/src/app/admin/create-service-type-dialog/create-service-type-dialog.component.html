@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Add New Service Type</h2>
+<mat-dialog-content>
+  <form [formGroup]="serviceTypeForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name (Internal)</mat-label>
+      <input matInput formControlName="name" placeholder="e.g., electrician">
+      <mat-hint>Lowercase letters and underscores only</mat-hint>
+      <mat-error>{{ getNameErrorMessage() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Display Name</mat-label>
+      <input matInput formControlName="display_name" placeholder="e.g., Electrician">
+      <mat-hint>This is what users will see</mat-hint>
+      <mat-error>{{ getDisplayNameErrorMessage() }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Icon</mat-label>
+      <mat-select formControlName="icon" placeholder="Select an icon (optional)">
+        <mat-option [value]="">None</mat-option>
+        <mat-option *ngFor="let icon of commonIcons" [value]="icon.value">
+          <mat-icon>{{ icon.value }}</mat-icon> {{ icon.label }}
+        </mat-option>
+      </mat-select>
+      <mat-hint>Material Design icon name</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Sort Order</mat-label>
+      <input matInput type="number" formControlName="sort_order" min="0">
+      <mat-hint>Lower numbers appear first</mat-hint>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="isLoading">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isLoading">
+    <span *ngIf="!isLoading">Create</span>
+    <span *ngIf="isLoading">Creating...</span>
+  </button>
+</mat-dialog-actions>

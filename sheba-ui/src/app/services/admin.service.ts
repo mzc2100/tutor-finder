@@ -45,7 +45,20 @@ export class AdminService {
     });
   }
 
-  updateListing(id: number, listing: UpdateListing): Observable<{ message: string }> {
+  updateListing(id: number, listing: UpdateListing | FormData): Observable<{ message: string }> {
+    // If FormData (with service_types array), don't set Content-Type header
+    if (listing instanceof FormData) {
+      return this.http.put<{ message: string }>(
+        `${this.apiUrl}/listings/${id}`,
+        listing,
+        {
+          headers: new HttpHeaders({
+            'x-admin-key': this.adminKey
+          })
+        }
+      );
+    }
+    
     return this.http.put<{ message: string }>(`${this.apiUrl}/listings/${id}`, listing, {
       headers: this.getHeaders()
     });

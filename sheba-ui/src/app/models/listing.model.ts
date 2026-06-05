@@ -1,11 +1,24 @@
 export type RateType = 'month' | 'day' | 'service' | 'negotiable';
 
+export interface ServiceType {
+  id: number;
+  name: string;
+  display_name: string;
+  icon: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Listing {
   id: number;
   title: string;
   description: string;
   category_id: number;
   category: string;
+  service_type?: string;
+  service_types?: ServiceType[];
   price: number;
   rate_type: RateType;
   location: string;
@@ -21,6 +34,7 @@ export interface CreateListing {
   title: string;
   description: string;
   category_id: number;
+  service_types?: number[];
   price: number;
   rate_type: RateType;
   location: string;
@@ -31,6 +45,7 @@ export interface CreateListing {
 export interface UpdateListing {
   title: string;
   description: string;
+  service_types?: number[];
   price: number;
   rate_type: RateType;
   location: string;

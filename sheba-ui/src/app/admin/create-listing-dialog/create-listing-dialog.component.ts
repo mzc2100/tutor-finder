@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AdminService } from '../../services/admin.service';
 import { CreateListing } from '../../models/listing.model';
+import { ServiceTypesService, ServiceType } from '../../services/service-types.service';
 
 @Component({
   selector: 'app-create-listing-dialog',
@@ -28,7 +29,7 @@ import { CreateListing } from '../../models/listing.model';
   templateUrl: './create-listing-dialog.component.html',
   styleUrl: './create-listing-dialog.component.scss'
 })
-export class CreateListingDialogComponent {
+export class CreateListingDialogComponent implements OnInit {
   listingForm: FormGroup;
   categories = [
     { id: 1, name: 'Tutor' },
@@ -36,7 +37,9 @@ export class CreateListingDialogComponent {
     { id: 3, name: 'Rent' },
     { id: 4, name: 'Service' }
   ];
+  serviceTypes: ServiceType[] = [];
   isLoading = false;
+  isServiceTypesLoading = true;
   selectedFiles: File[] = [];
   imagePreviews: string[] = [];
   maxImages = 10;
@@ -45,18 +48,59 @@ export class CreateListingDialogComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<CreateListingDialogComponent>,
     private adminService: AdminService,
+    private serviceTypesService: ServiceTypesService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.listingForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
       category_id: ['', Validators.required],
+      service_types: [[]],
       price: ['', [Validators.required, Validators.min(0)]],
       rate_type: ['month', Validators.required],
       location: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]{10,}$/)]],
       phone_visibility: ['show', Validators.required]
     });
+  }
+
+  ngOnInit(): void {
+    this.loadServiceTypes();
+    
+    // Watch for category changes
+    this.listingForm.get('category_id')?.valueChanges.subscribe(value => {
+      const categoryId = parseInt(value);
+      const categoryName = this.categories.find(c => c.id === categoryId)?.name;
+      
+      // Only show service types for Service category (id: 4)
+      if (categoryName === 'Service') {
+        this.listingForm.get('service_types')?.setValidators(Validators.required);
+        this.listingForm.get('service_types')?.updateValueAndValidity();
+      } else {
+        this.listingForm.get('service_types')?.clearValidators();
+        this.listingForm.get('service_types')?.setValue([]);
+        this.listingForm.get('service_types')?.updateValueAndValidity();
+      }
+    });
+  }
+
+  loadServiceTypes(): void {
+    this.serviceTypesService.getAllServiceTypes().subscribe({
+      next: (response) => {
+        this.serviceTypes = response.data;
+        this.isServiceTypesLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading service types:', error);
+        this.isServiceTypesLoading = false;
+      }
+    });
+  }
+
+  get isServiceCategory(): boolean {
+    const categoryId = parseInt(this.listingForm.get('category_id')?.value);
+    const categoryName = this.categories.find(c => c.id === categoryId)?.name;
+    return categoryName === 'Service';
   }
 
   onFileSelected(event: Event): void {
@@ -113,6 +157,14 @@ export class CreateListingDialogComponent {
       formData.append('location', this.listingForm.get('location')?.value);
       formData.append('phone', this.listingForm.get('phone')?.value);
       formData.append('phone_visibility', this.listingForm.get('phone_visibility')?.value);
+      
+      // Add service_types only if it's a Service category
+      const serviceTypes = this.listingForm.get('service_types')?.value;
+      if (this.isServiceCategory && serviceTypes && serviceTypes.length > 0) {
+        serviceTypes.forEach((serviceTypeId: number) => {
+          formData.append('service_types', serviceTypeId.toString());
+        });
+      }
 
       // Add images to form data
       this.selectedFiles.forEach(file => {

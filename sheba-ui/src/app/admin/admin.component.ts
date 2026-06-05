@@ -15,8 +15,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreateListingDialogComponent } from './create-listing-dialog/create-listing-dialog.component';
 import { EditListingDialogComponent } from './edit-listing-dialog/edit-listing-dialog.component';
+import { CreateServiceTypeDialogComponent } from './create-service-type-dialog/create-service-type-dialog.component';
+import { EditServiceTypeDialogComponent } from './edit-service-type-dialog/edit-service-type-dialog.component';
+import { ServiceTypesService, ServiceType } from '../services/service-types.service';
 
 @Component({
   selector: 'app-admin',
@@ -32,7 +39,12 @@ import { EditListingDialogComponent } from './edit-listing-dialog/edit-listing-d
     MatCardModule,
     MatChipsModule,
     MatTabsModule,
-    MatSelectModule
+    MatSelectModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'
@@ -48,10 +60,14 @@ export class AdminComponent implements OnInit {
   providerRegistrations: ProviderRegistration[] = [];
   providerRegistrationsLoading = true;
   providerRegistrationsDisplayedColumns: string[] = ['id', 'name', 'category', 'mobile', 'address', 'files', 'status', 'date', 'actions'];
+  serviceTypes: ServiceType[] = [];
+  serviceTypesLoading = true;
+  serviceTypesDisplayedColumns: string[] = ['id', 'name', 'display_name', 'icon', 'sort_order', 'status', 'actions'];
 
   constructor(
     private adminService: AdminService,
     private registrationService: ProviderRegistrationService,
+    private serviceTypesService: ServiceTypesService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
     private router: Router
@@ -61,6 +77,7 @@ export class AdminComponent implements OnInit {
     this.loadListings();
     this.loadPhoneRequests();
     this.loadProviderRegistrations();
+    this.loadServiceTypes();
   }
 
   loadListings(): void {
@@ -222,6 +239,63 @@ export class AdminComponent implements OnInit {
         return 'status-rejected';
       default:
         return 'status-pending';
+    }
+  }
+
+  loadServiceTypes(): void {
+    this.serviceTypesLoading = true;
+    this.serviceTypesService.getAllServiceTypes().subscribe({
+      next: (response) => {
+        this.serviceTypes = response.data;
+        this.serviceTypesLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading service types:', error);
+        this.snackBar.open('Failed to load service types', 'Close', { duration: 3000 });
+        this.serviceTypesLoading = false;
+      }
+    });
+  }
+
+  openCreateServiceTypeDialog(): void {
+    const dialogRef = this.dialog.open(CreateServiceTypeDialogComponent, {
+      width: '400px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadServiceTypes();
+        this.snackBar.open('Service type created successfully', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  openEditServiceTypeDialog(serviceType: ServiceType): void {
+    const dialogRef = this.dialog.open(EditServiceTypeDialogComponent, {
+      width: '400px',
+      data: serviceType
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadServiceTypes();
+        this.snackBar.open('Service type updated successfully', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  deleteServiceType(id: number): void {
+    if (confirm('Are you sure you want to delete this service type?')) {
+      this.serviceTypesService.deleteServiceType(id).subscribe({
+        next: () => {
+          this.loadServiceTypes();
+          this.snackBar.open('Service type deleted successfully', 'Close', { duration: 3000 });
+        },
+        error: (error) => {
+          console.error('Error deleting service type:', error);
+          this.snackBar.open('Failed to delete service type', 'Close', { duration: 3000 });
+        }
+      });
     }
   }
 

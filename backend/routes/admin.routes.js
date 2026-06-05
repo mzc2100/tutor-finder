@@ -54,6 +54,7 @@ router.post('/listings', upload.array('images', 10), async (req, res) => {
       title,
       description,
       category_id,
+      service_types,
       price,
       rate_type,
       location,
@@ -61,16 +62,39 @@ router.post('/listings', upload.array('images', 10), async (req, res) => {
       phone_visibility
     } = req.body;
 
-    // Insert listing
+    // Parse service_types if it's a string (from FormData)
+    let serviceTypeIds = [];
+    if (service_types) {
+      if (Array.isArray(service_types)) {
+        serviceTypeIds = service_types.map(id => parseInt(id));
+      } else {
+        serviceTypeIds = [parseInt(service_types)];
+      }
+    }
+
+    // Insert listing (keep service_type column for backward compatibility)
     const [result] = await db.query(
       `INSERT INTO listings
-       (title, description, category_id, price, rate_type, location, phone, phone_visibility)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [title, description, category_id, price, rate_type || 'month', location, phone, phone_visibility || 'show']
+       (title, description, category_id, service_type, price, rate_type, location, phone, phone_visibility)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [title, description, category_id, null, price, rate_type || 'month', location, phone, phone_visibility || 'show']
     );
 
     const listingId = result.insertId;
     const files = req.files || [];
+
+    // Insert service type relationships into junction table
+    if (serviceTypeIds.length > 0 && serviceTypeIds[0]) {
+      for (const serviceTypeId of serviceTypeIds) {
+        if (serviceTypeId) {
+          await db.query(
+            `INSERT INTO listing_service_types (listing_id, service_type_id)
+             VALUES (?, ?)`,
+            [listingId, serviceTypeId]
+          );
+        }
+      }
+    }
 
     // If images were uploaded, handle them
     if (files.length > 0) {
@@ -121,6 +145,7 @@ router.put('/listings/:id', upload.array('images', 10), async (req, res) => {
     const {
       title,
       description,
+      service_types,
       price,
       rate_type,
       location,
@@ -130,13 +155,42 @@ router.put('/listings/:id', upload.array('images', 10), async (req, res) => {
       delete_existing_images
     } = req.body;
 
-    // Update listing details
+    // Parse service_types if it's a string (from FormData)
+    let serviceTypeIds = [];
+    if (service_types) {
+      if (Array.isArray(service_types)) {
+        serviceTypeIds = service_types.map(id => parseInt(id));
+      } else {
+        serviceTypeIds = [parseInt(service_types)];
+      }
+    }
+
+    // Update listing details (keep service_type column for backward compatibility)
     await db.query(
       `UPDATE listings
-       SET title=?, description=?, price=?, rate_type=?, location=?, phone=?, phone_visibility=?, is_active=?
+       SET title=?, description=?, service_type=?, price=?, rate_type=?, location=?, phone=?, phone_visibility=?, is_active=?
        WHERE id=?`,
-      [title, description, price, rate_type || 'month', location, phone, phone_visibility || 'show', is_active, id]
+      [title, description, null, price, rate_type || 'month', location, phone, phone_visibility || 'show', is_active, id]
     );
+
+    // Delete existing service type relationships
+    await db.query(
+      `DELETE FROM listing_service_types WHERE listing_id = ?`,
+      [id]
+    );
+
+    // Insert new service type relationships
+    if (serviceTypeIds.length > 0 && serviceTypeIds[0]) {
+      for (const serviceTypeId of serviceTypeIds) {
+        if (serviceTypeId) {
+          await db.query(
+            `INSERT INTO listing_service_types (listing_id, service_type_id)
+             VALUES (?, ?)`,
+            [id, serviceTypeId]
+          );
+        }
+      }
+    }
 
     const files = req.files || [];
 
@@ -228,7 +282,7 @@ router.delete('/listings/:id', async (req, res) => {
 });
 
 /**
- * GET all listings (admin view) with images
+ * GET all listings (admin view) with images and service types
  */
 router.get('/listings', async (req, res) => {
   const [rows] = await db.query(
@@ -240,13 +294,26 @@ router.get('/listings', async (req, res) => {
      ORDER BY l.created_at DESC`
   );
 
-  // Parse images array for each listing
-  const listingsWithImages = rows.map(row => ({
-    ...row,
-    images: row.images ? row.images.split(',') : []
+  // Parse images array for each listing and get service types
+  const listingsWithDetails = await Promise.all(rows.map(async (row) => {
+    // Get service types for this listing
+    const [serviceTypes] = await db.query(
+      `SELECT st.id, st.name, st.display_name, st.icon
+       FROM service_types st
+       JOIN listing_service_types lst ON st.id = lst.service_type_id
+       WHERE lst.listing_id = ?
+       ORDER BY st.sort_order, st.name`,
+      [row.id]
+    );
+
+    return {
+      ...row,
+      images: row.images ? row.images.split(',') : [],
+      service_types: serviceTypes
+    };
   }));
 
-  res.json(listingsWithImages);
+  res.json(listingsWithDetails);
 });
 
 /**

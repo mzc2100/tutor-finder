@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const db = require('../db/mysql');
+const { sendRegistrationEmail } = require('../utils/email');
 
 const router = express.Router();
 
@@ -63,6 +64,22 @@ router.post('/', upload.fields([
       reference_number,
       other_notes
     ]);
+
+    // Send email notification
+    const registrationData = {
+      full_name,
+      mobile_number,
+      address,
+      category,
+      reference_number,
+      other_notes,
+      created_at: new Date().toISOString()
+    };
+    
+    // Send email asynchronously (don't wait for it to complete)
+    sendRegistrationEmail(registrationData).catch(emailError => {
+      console.error('Failed to send registration email:', emailError);
+    });
 
     res.status(201).json({
       success: true,

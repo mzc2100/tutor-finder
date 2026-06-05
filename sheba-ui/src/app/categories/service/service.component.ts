@@ -10,10 +10,12 @@ import { ListingService, PaginatedListingsResponse } from '../../services/listin
 import { Listing } from '../../models/listing.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { PhoneRequestDialogComponent } from '../../shared/phone-request-dialog/phone-request-dialog.component';
 import { ListingDetailDialogComponent, ListingDetailData } from '../../shared/listing-detail-dialog/listing-detail-dialog.component';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { ServiceTypesService, ServiceType } from '../../services/service-types.service';
 
 @Component({
   selector: 'app-service',
@@ -26,6 +28,7 @@ import { environment } from '../../../environments/environment';
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
+    MatSelectModule,
     FormsModule,
     RouterLink
   ],
@@ -37,6 +40,10 @@ export class ServiceComponent implements OnInit {
   filteredListings: Listing[] = [];
   isLoading = true;
   searchTerm = '';
+  selectedServiceType = 'All';
+  
+  // Service types for dropdown filter (fetched from API)
+  serviceTypes: { value: string; label: string }[] = [];
   
   // Pagination
   currentPage = 1;
@@ -47,11 +54,39 @@ export class ServiceComponent implements OnInit {
 
   constructor(
     private listingService: ListingService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private serviceTypesService: ServiceTypesService
   ) {}
 
   ngOnInit(): void {
+    this.loadServiceTypes();
     this.loadServiceListings(1);
+  }
+
+  loadServiceTypes(): void {
+    this.serviceTypesService.getAllServiceTypes().subscribe({
+      next: (response) => {
+        // Transform API response to component format
+        this.serviceTypes = [
+          { value: 'All', label: 'All Services' },
+          ...response.data.map(type => ({
+            value: type.name,
+            label: type.display_name
+          }))
+        ];
+      },
+      error: (error) => {
+        console.error('Error loading service types:', error);
+        // Fallback to default types if API fails
+        this.serviceTypes = [
+          { value: 'All', label: 'All Services' },
+          { value: 'Electrician', label: 'Electrician' },
+          { value: 'Plumber', label: 'Plumber' },
+          { value: 'AC', label: 'AC' },
+          { value: 'General', label: 'General' }
+        ];
+      }
+    });
   }
 
   loadServiceListings(page: number = 1): void {
@@ -66,6 +101,9 @@ export class ServiceComponent implements OnInit {
         this.totalItems = response.pagination.totalItems;
         this.totalPages = response.pagination.totalPages;
         this.isLoading = false;
+        
+        // Apply current filters after loading
+        this.filterListings();
       },
       error: (error) => {
         console.error('Error loading service listings:', error);
@@ -75,18 +113,34 @@ export class ServiceComponent implements OnInit {
   }
 
   filterListings(): void {
-    if (!this.searchTerm) {
-      this.filteredListings = this.listings;
-      return;
+    // Start with all listings
+    let filtered = [...this.listings];
+    
+    // Apply service type filter (check the service_types array)
+    if (this.selectedServiceType !== 'All') {
+      filtered = filtered.filter(listing => 
+        listing.service_types && 
+        listing.service_types.some((st: any) => st.name === this.selectedServiceType)
+      );
     }
+    
+    // Apply search term filter
+    if (this.searchTerm) {
+      const term = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(listing => 
+        listing.title.toLowerCase().includes(term) ||
+        listing.description.toLowerCase().includes(term) ||
+        listing.location.toLowerCase().includes(term) ||
+        listing.price.toString().includes(term)
+      );
+    }
+    
+    this.filteredListings = filtered;
+    this.paginatedListings = filtered; // Update paginated listings with filtered results
+  }
 
-    const term = this.searchTerm.toLowerCase();
-    this.filteredListings = this.listings.filter(listing => 
-      listing.title.toLowerCase().includes(term) ||
-      listing.description.toLowerCase().includes(term) ||
-      listing.location.toLowerCase().includes(term) ||
-      listing.price.toString().includes(term)
-    );
+  onServiceTypeChange(): void {
+    this.filterListings();
   }
 
   onPageChange(page: number): void {

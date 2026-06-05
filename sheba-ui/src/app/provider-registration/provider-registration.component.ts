@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { ProviderRegistrationService } from '../services/provider-registration.service';
+import { ServiceTypesService, ServiceType } from '../services/service-types.service';
 
 @Component({
   selector: 'app-provider-registration',
@@ -28,19 +29,12 @@ import { ProviderRegistrationService } from '../services/provider-registration.s
   templateUrl: './provider-registration.component.html',
   styleUrl: './provider-registration.component.scss'
 })
-export class ProviderRegistrationComponent {
+export class ProviderRegistrationComponent implements OnInit {
   registrationForm: FormGroup;
   selectedCategory: string = '';
-  categories = [
-    { name: 'Tutor', icon: 'school' },
-    { name: 'Maid', icon: 'cleaning_services' },
-    { name: 'Rentals - Car', icon: 'directions_car' },
-    { name: 'Rentals - Home', icon: 'home' },
-    { name: 'Service - Electrician', icon: 'electrical_services' },
-    { name: 'Service - Plumber', icon: 'plumbing' },
-    { name: 'Service - AC', icon: 'ac_unit' },
-    { name: 'Service - General', icon: 'build' }
-  ];
+  categories: any[] = [];
+  serviceTypes: ServiceType[] = [];
+  isServiceTypesLoading = true;
   isLoading = false;
   nidPhotoFile: File | null = null;
   cvFile: File | null = null;
@@ -50,7 +44,8 @@ export class ProviderRegistrationComponent {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private registrationService: ProviderRegistrationService
+    private registrationService: ProviderRegistrationService,
+    private serviceTypesService: ServiceTypesService
   ) {
     this.registrationForm = this.fb.group({
       full_name: ['', [Validators.required, Validators.minLength(3)]],
@@ -60,6 +55,55 @@ export class ProviderRegistrationComponent {
       reference_number: [''],
       other_notes: ['']
     });
+  }
+
+  ngOnInit(): void {
+    this.loadServiceTypes();
+    this.buildCategories();
+  }
+
+  loadServiceTypes(): void {
+    this.serviceTypesService.getAllServiceTypes().subscribe({
+      next: (response) => {
+        this.serviceTypes = response.data;
+        this.isServiceTypesLoading = false;
+        this.buildCategories();
+      },
+      error: (error) => {
+        console.error('Error loading service types:', error);
+        this.isServiceTypesLoading = false;
+        // Use fallback categories if API fails
+        this.buildCategories();
+      }
+    });
+  }
+
+  buildCategories(): void {
+    this.categories = [
+      { name: 'Tutor', icon: 'school' },
+      { name: 'Maid', icon: 'cleaning_services' },
+      { name: 'Rentals - Car', icon: 'directions_car' },
+      { name: 'Rentals - Home', icon: 'home' }
+    ];
+
+    // Add service types dynamically from the database
+    if (this.serviceTypes.length > 0) {
+      this.serviceTypes.forEach(type => {
+        this.categories.push({
+          name: `Service - ${type.display_name}`,
+          icon: type.icon || 'build',
+          serviceTypeName: type.name
+        });
+      });
+    } else {
+      // Fallback to hardcoded service types if API fails
+      this.categories.push(
+        { name: 'Service - Electrician', icon: 'electrical_services' },
+        { name: 'Service - Plumber', icon: 'plumbing' },
+        { name: 'Service - AC', icon: 'ac_unit' },
+        { name: 'Service - General', icon: 'build' }
+      );
+    }
   }
 
   onCategorySelect(category: string): void {

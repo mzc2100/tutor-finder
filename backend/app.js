@@ -26,6 +26,9 @@ app.use('/backend/admin', adminRoutes);
 const providerRegistrationsRoutes = require('./routes/provider-registrations.routes');
 app.use('/backend/provider-registrations', providerRegistrationsRoutes);
 
+const serviceTypesRoutes = require('./routes/service-types.routes');
+app.use('/backend/service-types', serviceTypesRoutes);
+
 const PORT = process.env.PORT || 3000;
 
 const server = app.listen(PORT, () => {

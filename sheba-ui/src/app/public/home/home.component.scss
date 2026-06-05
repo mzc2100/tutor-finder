@@ -6,7 +6,11 @@
 
 // Hero Section
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(rgba(102, 126, 234, 0.191), rgba(118, 75, 162, 0.85)), 
+              url('https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=1920&q=80');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: 0% 20%;
   color: white;
   padding: 80px 20px;
   text-align: center;
