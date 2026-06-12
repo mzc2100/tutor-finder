@@ -50,6 +50,13 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
+      <mat-label>Rating (1-5)</mat-label>
+      <input matInput type="number" formControlName="rating" placeholder="Enter rating" min="0" max="5" step="0.1">
+      <mat-error>{{ getErrorMessage('rating') }}</mat-error>
+      <mat-hint>Admin only - set rating (0-5 stars)</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
       <mat-label>Phone Visibility</mat-label>
       <mat-select formControlName="phone_visibility">
         <mat-option value="show">Show Phone Number</mat-option>

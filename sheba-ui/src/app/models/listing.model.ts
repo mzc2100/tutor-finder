@@ -23,6 +23,7 @@ export interface Listing {
   rate_type: RateType;
   location: string;
   phone: string;
+  rating: number;
   phone_visibility: 'show' | 'request';
   is_active: boolean;
   created_at: string;
@@ -39,6 +40,7 @@ export interface CreateListing {
   rate_type: RateType;
   location: string;
   phone: string;
+  rating: number;
   phone_visibility: 'show' | 'request';
 }
 
@@ -50,6 +52,7 @@ export interface UpdateListing {
   rate_type: RateType;
   location: string;
   phone: string;
+  rating: number;
   phone_visibility: 'show' | 'request';
   is_active: boolean;
 }

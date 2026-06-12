@@ -53,6 +53,7 @@ export class EditListingDialogComponent implements OnInit {
       rate_type: [data.rate_type || 'month', Validators.required],
       location: [data.location, Validators.required],
       phone: [data.phone, [Validators.required, Validators.pattern(/^[0-9+\-\s()]{10,}$/)]],
+      rating: [data.rating || 0, [Validators.min(0), Validators.max(5)]],
       phone_visibility: [data.phone_visibility || 'show', Validators.required],
       is_active: [data.is_active],
       service_types: [existingServiceTypeIds]
@@ -107,6 +108,7 @@ export class EditListingDialogComponent implements OnInit {
       formData.append('rate_type', this.listingForm.get('rate_type')?.value);
       formData.append('location', this.listingForm.get('location')?.value);
       formData.append('phone', this.listingForm.get('phone')?.value);
+      formData.append('rating', this.listingForm.get('rating')?.value || 0);
       formData.append('phone_visibility', this.listingForm.get('phone_visibility')?.value);
       formData.append('is_active', this.listingForm.get('is_active')?.value ? '1' : '0');
       

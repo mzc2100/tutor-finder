@@ -67,6 +67,7 @@ CREATE TABLE `listings` (
   `price` decimal(10,2) DEFAULT NULL,
   `location` varchar(100) DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
+  `rating` decimal(2,1) DEFAULT 0.0,
   `is_active` tinyint(4) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `phone_visibility` enum('show','request') DEFAULT 'show'

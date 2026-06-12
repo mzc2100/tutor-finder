@@ -59,6 +59,7 @@ router.post('/listings', upload.array('images', 10), async (req, res) => {
       rate_type,
       location,
       phone,
+      rating,
       phone_visibility
     } = req.body;
 
@@ -75,9 +76,9 @@ router.post('/listings', upload.array('images', 10), async (req, res) => {
     // Insert listing (keep service_type column for backward compatibility)
     const [result] = await db.query(
       `INSERT INTO listings
-       (title, description, category_id, service_type, price, rate_type, location, phone, phone_visibility)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [title, description, category_id, null, price, rate_type || 'month', location, phone, phone_visibility || 'show']
+       (title, description, category_id, service_type, price, rate_type, location, phone, rating, phone_visibility)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [title, description, category_id, null, price, rate_type || 'month', location, phone, rating || 0, phone_visibility || 'show']
     );
 
     const listingId = result.insertId;
@@ -150,6 +151,7 @@ router.put('/listings/:id', upload.array('images', 10), async (req, res) => {
       rate_type,
       location,
       phone,
+      rating,
       phone_visibility,
       is_active,
       delete_existing_images
@@ -168,9 +170,9 @@ router.put('/listings/:id', upload.array('images', 10), async (req, res) => {
     // Update listing details (keep service_type column for backward compatibility)
     await db.query(
       `UPDATE listings
-       SET title=?, description=?, service_type=?, price=?, rate_type=?, location=?, phone=?, phone_visibility=?, is_active=?
+       SET title=?, description=?, service_type=?, price=?, rate_type=?, location=?, phone=?, rating=?, phone_visibility=?, is_active=?
        WHERE id=?`,
-      [title, description, null, price, rate_type || 'month', location, phone, phone_visibility || 'show', is_active, id]
+      [title, description, null, price, rate_type || 'month', location, phone, rating || 0, phone_visibility || 'show', is_active, id]
     );
 
     // Delete existing service type relationships

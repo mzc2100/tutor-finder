@@ -60,6 +60,7 @@ export class CreateListingDialogComponent implements OnInit {
       rate_type: ['month', Validators.required],
       location: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]{10,}$/)]],
+      rating: [0, [Validators.min(0), Validators.max(5)]],
       phone_visibility: ['show', Validators.required]
     });
   }
@@ -156,6 +157,7 @@ export class CreateListingDialogComponent implements OnInit {
       formData.append('rate_type', this.listingForm.get('rate_type')?.value);
       formData.append('location', this.listingForm.get('location')?.value);
       formData.append('phone', this.listingForm.get('phone')?.value);
+      formData.append('rating', this.listingForm.get('rating')?.value || 0);
       formData.append('phone_visibility', this.listingForm.get('phone_visibility')?.value);
       
       // Add service_types only if it's a Service category

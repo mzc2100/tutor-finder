@@ -81,6 +81,24 @@
             Contact
           </button>
         </div>
+
+        <div class="rating-display">
+          <svg *ngFor="let star of [1,2,3,4,5]" 
+               class="star-svg"
+               viewBox="0 0 24 24" 
+               width="20" 
+               height="20">
+            <defs>
+              <linearGradient [id]="'star-gradient-' + listing.id + '-' + star">
+                <stop [attr.offset]="getStarFillPercentage(listing.rating, star) + '%'" stop-color="#FFD700"/>
+                <stop [attr.offset]="getStarFillPercentage(listing.rating, star) + '%'" stop-color="#E0E0E0"/>
+              </linearGradient>
+            </defs>
+            <polygon points="12,2 15,9 22,9 17,14 19,21 12,17 5,21 7,14 2,9 9,9"
+                     [attr.fill]="'url(#star-gradient-' + listing.id + '-' + star + ')'"/>
+          </svg>
+          <span class="rating-number">{{ listing.rating }}/5</span>
+        </div>
       </mat-card-content>
     </mat-card>
 

@@ -180,4 +180,24 @@ export class MaidComponent implements OnInit {
   min(a: number, b: number): number {
     return Math.min(a, b);
   }
+
+  getStarColor(rating: number, star: number): string {
+    return star <= rating ? 'warn' : 'primary';
+  }
+
+  getStarFillStyle(rating: number, star: number): string {
+    // Calculate the fill percentage for this star
+    const ratingForThisStar = rating - (star - 1);
+    const fillPercentage = Math.min(100, Math.max(0, ratingForThisStar * 100));
+    
+    // Use linear-gradient to create partial fill effect
+    // gold color (#FFD700) for filled part, gray (#E0E0E0) for empty part
+    return `linear-gradient(90deg, #FFD700 ${fillPercentage}%, #E0E0E0 ${fillPercentage}%)`;
+  }
+
+  getStarFillPercentage(rating: number, star: number): number {
+    // Calculate how much of this star should be filled
+    const ratingForThisStar = rating - (star - 1);
+    return Math.min(100, Math.max(0, ratingForThisStar * 100));
+  }
 }
